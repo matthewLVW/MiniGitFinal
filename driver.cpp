@@ -1,10 +1,14 @@
 #include <iostream>
+#include "miniGit.cpp"
+
 using namespace std;
 
 int main()
 {
     int exit;
-    string exitStr;
+    miniGit git;
+    doublyNode *dNode;
+    string exitStr, fileName;
     do
     {
         do
@@ -12,7 +16,7 @@ int main()
             cout << "Select a numerical option:\n+===== Main Menu =====+" << endl;
             cout << "1. init\n2. add\n3. rm\n4. commit\n5. checkout\n6. quit\n+----------------------+" << endl;
             cin >> exitStr;
-            if(exitStr != "1" && exitStr != "2" && exitStr != "3" && exitStr != "4" && exitStr != "5" && exitStr != "6")
+            if(exitStr != "1" || exitStr != "2" || exitStr != "3" || exitStr != "4" || exitStr != "5" || exitStr != "6")
             {
                 cout << "Invalid Input" << endl;
             }
@@ -21,10 +25,18 @@ int main()
         switch(exit)
         {
             case 1:
-                cout << "case 1" << endl;
+                
+                dNode = git.init();                 // Initialize empty repository
+                cout << "New respository initialized." << endl;
                 break;
             case 2:
-                cout << "case 2" << endl;
+                do   
+                {
+                    cout << "Enter file name: " << endl;
+                    getline(cin, fileName);
+                    if (git.checkFile(fileName)){cout << "File name already exist. Enter a different name." << endl;}
+                }while (git.checkFile(fileName));
+                git.addFile(dNode, fileName);
                 break;
             case 3:
                 cout << "case 3" << endl;

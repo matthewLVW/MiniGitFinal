@@ -20,9 +20,14 @@ class miniGit
 {
     private:
         
-        singlyNode *head;
+        doublyNode *head;
 
     public:
-        
 
+        miniGit();
+        ~miniGit();
+        doublyNode *init();
+        bool checkFile(string file);
+        void addFile(doublyNode *Dnode, string fileName);
+        
 };
