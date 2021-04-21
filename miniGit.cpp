@@ -1,6 +1,7 @@
 #include <iostream>
 #include "miniGit.hpp"
 #include <filesystem>
+#include <fstream>
 
 namespace fs = std::filesystem;
 
@@ -21,6 +22,7 @@ doublyNode *miniGit::init()
     Dnode->next = nullptr;
     fs::remove_all(".miniGit");
     fs::create_directory(".miniGit");
+    head = Dnode;
     return Dnode;
 }
 bool miniGit::checkFile(string file)
@@ -38,29 +40,71 @@ bool miniGit::checkFile(string file)
     return false;
 }
 void miniGit::addFile(doublyNode *Dnode, string fileName)
-{
-    if (!checkFile(fileName))
+{ 
+    ifstream inFile(fileName);
+
+    if(!inFile.is_open())
     {
-        singlyNode *insert = new singlyNode;
-        insert->fileName = fileName;
-        insert->fileVersion = "00";
-        insert->next = nullptr;
-        if (Dnode->head == nullptr)
+        if (!checkFile(fileName))
         {
-            Dnode->head = insert;
-        }
-        else
-        {
-            singlyNode *crawler = Dnode->head;
-            while (crawler->next != nullptr)
-            {    
-                crawler = crawler->next;
+            singlyNode *insert = new singlyNode;
+            insert->fileName = fileName;
+            insert->fileVersion = "00";
+            insert->next = nullptr;
+            if (Dnode->head == nullptr)
+            {
+                Dnode->head = insert;
             }
-            crawler->next = insert;
+            else
+            {
+                singlyNode *crawler = Dnode->head;
+                while (crawler->next != nullptr)
+                {    
+                    crawler = crawler->next;
+                }
+                crawler->next = insert;
+            }
         }
+        else{return;}
     }
-    else
+}
+void miniGit::removeFile(string file)
+{
+    doublyNode *main = head;
+    singlyNode *curr = main->head, *prev = nullptr;
+
+    while (curr != nullptr)
     {
-        return;
+        if (curr->fileName == file)
+        {
+            if (prev == nullptr)
+            {
+                main->head = curr->next;
+                delete curr;
+            }
+            else
+            {
+                prev->next = curr->next;
+                delete curr;
+            }
+        }
+        prev = curr;
+        curr = curr->next;
     }
+}
+void miniGit::printDS()
+{
+    doublyNode *DLL = head;
+    do{
+        singlyNode *slltmp = DLL->head;
+        cout <<"Commit number: "<<DLL->commitNumber<<endl;
+        cout <<"Files: ";
+        while(slltmp != nullptr)
+        {
+            cout << slltmp->fileName <<", ";
+            slltmp = slltmp->next;
+        }
+    cout<<endl;
+    DLL = DLL->next;
+    }while(DLL != nullptr);
 }

@@ -29,5 +29,7 @@ class miniGit
         doublyNode *init();
         bool checkFile(string file);
         void addFile(doublyNode *Dnode, string fileName);
+        void removeFile(string file);
+        void printDS();
         
 };
