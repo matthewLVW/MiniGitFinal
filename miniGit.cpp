@@ -1,6 +1,7 @@
 #include <iostream>
 #include "miniGit.hpp"
 #include <filesystem>
+#include <fstream>
 
 namespace fs = std::filesystem;
 
@@ -21,15 +22,17 @@ doublyNode *miniGit::init()
     Dnode->next = nullptr;
     fs::remove_all(".miniGit");
     fs::create_directory(".miniGit");
+    head = Dnode;
     return Dnode;
 }
 bool miniGit::checkFile(string file)
 {
     doublyNode *dcrawler = head;
     singlyNode *crawler = dcrawler->head;
+   
     while (crawler != nullptr)
     {
-        if (crawler->fileName == file)
+                if (crawler->fileName == file)
         {
             return true;
         }
@@ -38,7 +41,9 @@ bool miniGit::checkFile(string file)
     return false;
 }
 void miniGit::addFile(doublyNode *Dnode, string fileName)
-{
+{ ifstream inFile(fileName);
+
+if(!inFile.is_open()){
     if (!checkFile(fileName))
     {
         singlyNode *insert = new singlyNode;
@@ -59,8 +64,29 @@ void miniGit::addFile(doublyNode *Dnode, string fileName)
             crawler->next = insert;
         }
     }
+    else{
+        return;
+    }
+}
     else
     {
         return;
     }
+}
+
+void miniGit::printDS(){
+
+
+doublyNode *DLL = head;
+do{
+singlyNode *slltmp = DLL->head;
+cout <<"Commit number: "<<DLL->commitNumber<<endl;
+cout <<"Files: ";
+while(slltmp != nullptr){
+cout<<slltmp->fileName<<", ";
+slltmp=slltmp->next;
+}
+cout<<endl;
+DLL = DLL->next;
+}while(DLL != nullptr);
 }

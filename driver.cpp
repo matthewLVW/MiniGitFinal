@@ -14,13 +14,13 @@ int main()
         do
         {
             cout << "Select a numerical option:\n+===== Main Menu =====+" << endl;
-            cout << "1. init\n2. add\n3. rm\n4. commit\n5. checkout\n6. quit\n+----------------------+" << endl;
+            cout << "1. init\n2. add\n3. rm\n4. commit\n5. checkout\n6. quit\n7. print\n+----------------------+" << endl;
             cin >> exitStr;
-            if(exitStr != "1" || exitStr != "2" || exitStr != "3" || exitStr != "4" || exitStr != "5" || exitStr != "6")
+            if(exitStr != "1" and exitStr != "2" and exitStr != "3" and exitStr != "4" and exitStr != "5" and exitStr != "6" && exitStr != "7")
             {
                 cout << "Invalid Input" << endl;
             }
-        }while(exitStr != "1" && exitStr != "2" && exitStr != "3" && exitStr != "4" && exitStr != "5" && exitStr != "6");
+        }while(exitStr != "1" && exitStr != "2" && exitStr != "3" && exitStr != "4" && exitStr != "5" && exitStr != "6" && exitStr != "7");
         exit = stoi(exitStr);
         switch(exit)
         {
@@ -30,13 +30,9 @@ int main()
                 cout << "New respository initialized." << endl;
                 break;
             case 2:
-                do   
-                {
                     cout << "Enter file name: " << endl;
-                    getline(cin, fileName);
-                    if (git.checkFile(fileName)){cout << "File name already exist. Enter a different name." << endl;}
-                }while (git.checkFile(fileName));
-                git.addFile(dNode, fileName);
+                    cin>>fileName;
+                    git.addFile(dNode, fileName);
                 break;
             case 3:
                 cout << "case 3" << endl;
@@ -49,6 +45,9 @@ int main()
                 break;
             case 6:
                 cout << "exit" << endl;
+                break;
+            case 7:
+                git.printDS();
                 break;
             default:
                 cout << "Invalid input" << endl;
