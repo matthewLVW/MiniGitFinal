@@ -29,9 +29,10 @@ bool miniGit::checkFile(string file)
 {
     doublyNode *dcrawler = head;
     singlyNode *crawler = dcrawler->head;
+   
     while (crawler != nullptr)
     {
-        if (crawler->fileName == file)
+                if (crawler->fileName == file)
         {
             return true;
         }

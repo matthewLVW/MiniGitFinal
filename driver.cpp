@@ -20,7 +20,7 @@ int main()
             {
                 cout << "Invalid Input" << endl;
             }
-        }while(exitStr != "1" && exitStr != "2" && exitStr != "3" && exitStr != "4" && exitStr != "5" && exitStr != "6");
+        }while(exitStr != "1" && exitStr != "2" && exitStr != "3" && exitStr != "4" && exitStr != "5" && exitStr != "6" && exitStr != "7");
         exit = stoi(exitStr);
         switch(exit)
         {
@@ -30,8 +30,6 @@ int main()
                 cout << "New respository initialized." << endl;
                 break;
             case 2:
-                do   
-                {
                     cout << "Enter file name: " << endl;
                     getline(cin, fileName);
                     if (git.checkFile(fileName))
@@ -60,6 +58,9 @@ int main()
                 break;
             case 6:
                 cout << "exit" << endl;
+                break;
+            case 7:
+                git.printDS();
                 break;
             default:
                 cout << "Invalid input" << endl;
