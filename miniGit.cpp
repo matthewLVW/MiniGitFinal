@@ -32,7 +32,7 @@ bool miniGit::checkFile(string file)
    
     while (crawler != nullptr)
     {
-                if (crawler->fileName == file)
+        if (crawler->fileName == file)
         {
             return true;
         }
@@ -42,32 +42,24 @@ bool miniGit::checkFile(string file)
 }
 void miniGit::addFile(doublyNode *Dnode, string fileName)
 { 
-    ifstream inFile(fileName);
-
-    if(!inFile.is_open())
+    singlyNode *insert = new singlyNode;
+    insert->fileName = fileName;
+    insert->fileVersion = "00";
+    insert->next = nullptr;
+    if (Dnode->head == nullptr)
     {
-        if (!checkFile(fileName))
-        {
-            singlyNode *insert = new singlyNode;
-            insert->fileName = fileName;
-            insert->fileVersion = "00";
-            insert->next = nullptr;
-            if (Dnode->head == nullptr)
-            {
-                Dnode->head = insert;
-            }
-            else
-            {
-                singlyNode *crawler = Dnode->head;
-                while (crawler->next != nullptr)
-                {    
-                    crawler = crawler->next;
-                }
-                crawler->next = insert;
-            }
-        }
-        else{return;}
+        Dnode->head = insert;
     }
+    else
+    {
+        singlyNode *crawler = Dnode->head;
+        while (crawler->next != nullptr)
+        {    
+            crawler = crawler->next;
+        }
+        crawler->next = insert;
+    }
+    return;
 }
 void miniGit::removeFile(string file)
 {
@@ -102,7 +94,7 @@ void miniGit::printDS()
         cout <<"Files: ";
         while(slltmp != nullptr)
         {
-            cout << slltmp->fileName <<", ";
+            cout << slltmp->fileName << "." << slltmp->fileVersion <<", ";
             slltmp = slltmp->next;
         }
     cout<<endl;
