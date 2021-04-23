@@ -69,7 +69,7 @@ int main()
                 else{cout << "File does not exist within the directory." << endl;}
                 break;
             case 4://COMMIT--IN PROGRESS
-                cout << "case 4" << endl;
+                git.commit();
                 break;
             case 5://CHECKOUT--IN PROGRESS
                 cout << "case 5" << endl;

@@ -101,3 +101,35 @@ void miniGit::printDS()
     DLL = DLL->next;
     }while(DLL != nullptr);
 }
+
+void miniGit::commit(){
+//go to current commit DLL node
+//Run through and for each file if it already exists (if it doesn't exist just add to .minigit) then check if changes have been made
+//If changes have been made increment the version number THEN copy the file into the .minigit directory
+//if it is unchanged do nothing
+//Once you have done this for each file then:
+//create a new DLL Node with incremented commit number and port the SLL from the previous node to this one.
+doublyNode *DLL = head;
+while(DLL->next != nullptr){
+    DLL = DLL->next;
+}
+singlyNode *SLL = DLL->head;
+while(SLL != nullptr){
+//logic to check if file already exists
+//logic to check if files are the exact same
+string tmp = ".minigit/" + SLL->fileName + SLL->fileVersion;
+fstream file;
+file.open(tmp.c_str());
+if(file.fail()){ //if file doesn't already exist in .minigit directory adds the file.
+string copyLine = "cp " + SLL->fileName +" .minigit/" + SLL->fileName + SLL->fileVersion;
+system(copyLine.c_str());
+}
+else{//if file does exist:
+    file.close();
+    file.open(tmp.c_str());
+    
+}
+
+SLL = SLL->next; 
+}
+}
