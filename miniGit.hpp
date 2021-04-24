@@ -37,19 +37,19 @@ class miniGit
 {
     private:
         
-        doublyNode *head;
+        doublyNode *DLLhead;
 
     public:
 
         miniGit();
         ~miniGit();
-        doublyNode *init();
+        void init();
         doublyNode *currCommit(int commit);
         bool checkFile(string file);
         void addFile(doublyNode *Dnode, string fileName);
         void removeFile(string file);
         void printDS();
-        void commit();
-        void addDDnode(doublyNode *Dnode);
+        void commit(int num_commit);
+        doublyNode *addDDnode(int incrementCommit);
         
 };

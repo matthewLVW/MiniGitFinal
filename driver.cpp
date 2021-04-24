@@ -1,12 +1,13 @@
 #include <iostream>
-#include "miniGit.cpp"
 #include <fstream>
+#include <filesystem>
+#include "miniGit.cpp"
 
 using namespace std;
 
 int main()
 {
-    int exit;
+    int exit, num_commit = 0;
     miniGit git;
     doublyNode *dNode;
     string exitStr, fileName;
@@ -28,9 +29,11 @@ int main()
         switch(exit)
         {
             case 1://INIT--DONE
-                dNode = git.init();                             // Initialize empty repository
+                git.init();
+                dNode = git.addDDnode(num_commit);                          // Initialize empty repository
                 cout << "New respository initialized." << endl;
                 break;
+            
             case 2://ADD--DONE
                 do{
                     fileExists = false;
@@ -41,11 +44,10 @@ int main()
                     {
                         cout << "File does not exist." << endl;
                     }
-                    else if(!checkFileName.fail())
+                    else
                     {
                         fileExists = true;
                     }
-                    checkFileName.close();
                 }while(!fileExists);
                 if (git.checkFile(fileName))
                 {
@@ -53,11 +55,14 @@ int main()
                 }
                 else
                 {
-                    git.addFile(dNode, fileName);
+                    // cout << num_commit << endl;
+                    // git.addFile(dNode, fileName);
+                    git.addFile(git.currCommit(num_commit), fileName);
                     //git.printDS();
                 }
                 checkFileName.close();
                 break;
+            
             case 3://REMOVE--DONE
                 cout << "Enter file name you wish to remove: " << endl;
                 getline(cin, fileName);
@@ -68,18 +73,24 @@ int main()
                 }
                 else{cout << "File does not exist within the directory." << endl;}
                 break;
+            
             case 4://COMMIT--IN PROGRESS
-                git.commit();
+                num_commit++;
+                git.commit(num_commit);
                 break;
+            
             case 5://CHECKOUT--IN PROGRESS
                 cout << "case 5" << endl;
                 break;
+            
             case 6://EXIT--DONE
                 cout << "exit" << endl;
                 break;
+            
             case 7:
                 git.printDS();
                 break;
+            
             default:
                 cout << "Invalid input" << endl;
                 break;

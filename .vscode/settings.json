@@ -4,7 +4,9 @@
         "iostream": "cpp",
         "istream": "cpp",
         "ostream": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "filesystem": "cpp",
+        "fstream": "cpp"
     },
     "C_Cpp.default.cppStandard": "c++17"
 }
