@@ -7,7 +7,7 @@ namespace fs = std::filesystem;
 
 miniGit::miniGit()
 {
-    
+    head = nullptr;
 }
 miniGit::~miniGit()
 {
@@ -101,13 +101,15 @@ void miniGit::removeFile(string file)
 void miniGit::printDS()
 {
     doublyNode *DLL = head;
-    do{
+    do
+    {
         singlyNode *slltmp = DLL->head;
-        cout <<"Commit number: "<<DLL->commitNumber<<endl;
-        cout <<"Files: ";
+        cout <<"[C#: "<< DLL->commitNumber<< "| -]-> ";
+    //     cout <<"Files: ";
         while(slltmp != nullptr)
         {
-            cout << slltmp->fileName << "." << slltmp->fileVersion <<", ";
+            cout << "[" << slltmp->fileName << "| -]-> ";
+            // << slltmp->fileVersion <<", ";
             slltmp = slltmp->next;
         }
     cout<<endl;
@@ -125,8 +127,44 @@ string renameFile(singlyNode *name, string file, string version)
             type = temp.substr(i, temp.length() - 1);
         }
     }
-    return name->fileName = sub + "_" + name->fileVersion + type;
+    return sub + "_" + name->fileVersion + type;
 }
+void miniGit::addDDnode(doublyNode *Dnode)
+{
+    if (head == nullptr)
+    {
+        head = Dnode;
+        Dnode->previous = nullptr;
+    }
+    else
+    {
+        doublyNode *crawler = head;
+        while (crawler->next != nullptr)
+        {  
+            Dnode->previous = crawler;
+            crawler = crawler->next;
+        }
+        crawler->next = Dnode;
+    }
+    return;
+}
+// singlyNode *copyList(singlyNode *OG, doublyNode *Dnode, bool checker, string version)
+// {
+//     singlyNode *curr = OG;
+//     singlyNode *copy = new singlyNode;
+//     Dnode->head = copy;
+//     copy->next = nullptr;
+//     while (curr != nullptr)
+//     {
+//         copy->fileName = OG->fileName;
+//         if (checker){copy->fileVersion = version;}
+//         else{copy->fileVersion = OG->fileVersion;}
+//         copy->next = OG->next;
+//         copy = copy->next;
+//         curr = curr->next;
+//     }
+//     return copy;
+// }
 void miniGit::commit()
 {
     //go to current commit DLL node
@@ -147,11 +185,13 @@ void miniGit::commit()
         //logic to check if file already exists
         //logic to check if files are the exact same
         bool difference = false;
-        string tmp = ".minigit/" + SLL->fileName + SLL->fileVersion;
+        // string tmp = ".minigit/" + SLL->fileName + SLL->fileVersion;
+        string tmp = ".minigit/" + renameFile(SLL, SLL->fileName, SLL->fileVersion);
         fstream file;
         file.open(tmp.c_str());
         if(file.fail())
         { //if file doesn't already exist in .minigit directory adds the file.
+            //copyLine = "cp " + SLL->fileName +" .minigit/" + SLL->fileName + SLL->fileVersion;
             copyLine = "cp " + SLL->fileName +" .minigit/" + renameFile(SLL, SLL->fileName, SLL->fileVersion);
             system(copyLine.c_str());
         }
@@ -180,8 +220,9 @@ void miniGit::commit()
                 {
                     SLL->fileVersion = to_string(fileV);
                 }
-                copyLine = "cp " + SLL->fileName +" .minigit/" + SLL->fileName + SLL->fileVersion;
-                // copyLine = "cp " + SLL->fileName +" .minigit/" + renameFile(SLL, SLL->fileName, SLL->fileVersion);
+                // cout << "Updating file version: " << SLL->fileVersion << endl;
+                // copyLine = "cp " + SLL->fileName +" .minigit/" + SLL->fileName + SLL->fileVersion;
+                copyLine = "cp " + SLL->fileName +" .minigit/" + renameFile(SLL, SLL->fileName, SLL->fileVersion);
                 system(copyLine.c_str());   
             }
             // file.close();
@@ -193,8 +234,9 @@ void miniGit::commit()
     singlyNode * copy = new singlyNode;
     comm->commitNumber = DLL->commitNumber++;
     comm->head = copy;
-    comm->next = nullptr;
-    comm->previous = DLL;
+    addDDnode(comm);
+    // comm->next = nullptr;
+    // comm->previous = DLL;
     SLL = DLL->head;
     while(SLL != nullptr)
     {

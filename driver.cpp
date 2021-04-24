@@ -54,7 +54,7 @@ int main()
                 else
                 {
                     git.addFile(dNode, fileName);
-                    git.printDS();
+                    //git.printDS();
                 }
                 checkFileName.close();
                 break;

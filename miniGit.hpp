@@ -50,5 +50,6 @@ class miniGit
         void removeFile(string file);
         void printDS();
         void commit();
+        void addDDnode(doublyNode *Dnode);
         
 };
