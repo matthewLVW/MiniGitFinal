@@ -25,6 +25,19 @@ doublyNode *miniGit::init()
     head = Dnode;
     return Dnode;
 }
+doublyNode *miniGit::currCommit(int commit)
+{
+    doublyNode *crawler = head;
+    while (crawler != nullptr)
+    {
+        if (crawler->commitNumber == commit)
+        {
+            return crawler;
+        }
+        crawler = crawler->next;
+    }
+    return nullptr;
+}
 bool miniGit::checkFile(string file)
 {
     doublyNode *dcrawler = head;
@@ -112,6 +125,7 @@ void miniGit::commit()
     //create a new DLL Node with incremented commit number and port the SLL from the previous node to this one.
     doublyNode *DLL = head;
     string copyLine;
+    bool difference = false;
     while(DLL->next != nullptr)
     {
         DLL = DLL->next;
@@ -137,21 +151,28 @@ void miniGit::commit()
             {
                 getline(file, word);
                 getline(file1,word1);
-                if (word != word1){break;}
+                if (word != word1)
+                {
+                    difference = true;
+                    break;
+                }
             }
-            int fileV = stoi(SLL->fileVersion) + 1;
-            if (fileV < 10)
+            if (difference)
             {
-                SLL->fileVersion = "0" + to_string(fileV); 
+                int fileV = stoi(SLL->fileVersion) + 1;
+                if (fileV < 10)
+                {
+                    SLL->fileVersion = "0" + to_string(fileV); 
+                }
+                else
+                {
+                    SLL->fileVersion = to_string(fileV);
+                }
+                copyLine = "cp " + SLL->fileName +" .minigit/" + SLL->fileName + SLL->fileVersion;
+                system(copyLine.c_str());   
             }
-            else
-            {
-                SLL->fileVersion = to_string(fileV);
-            }
-            copyLine = "cp " + SLL->fileName +" .minigit/" + SLL->fileName + SLL->fileVersion;
-            system(copyLine.c_str());
-            file.close();
-            file.open(tmp.c_str());    
+            // file.close();
+            // file.open(tmp.c_str());    
         }
         SLL = SLL->next;
     }
