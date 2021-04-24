@@ -114,7 +114,19 @@ void miniGit::printDS()
     DLL = DLL->next;
     }while(DLL != nullptr);
 }
-
+string renameFile(singlyNode *name, string file, string version)
+{
+    string temp = name->fileName, sub, type;
+    for (int i = 0; i < temp.length();i++)
+    {
+        if (temp[i] == '.')
+        {
+            sub = temp.substr(0, i);
+            type = temp.substr(i, temp.length() - 1);
+        }
+    }
+    return name->fileName = sub + "_" + name->fileVersion + type;
+}
 void miniGit::commit()
 {
     //go to current commit DLL node
@@ -125,7 +137,6 @@ void miniGit::commit()
     //create a new DLL Node with incremented commit number and port the SLL from the previous node to this one.
     doublyNode *DLL = head;
     string copyLine;
-    bool difference = false;
     while(DLL->next != nullptr)
     {
         DLL = DLL->next;
@@ -135,12 +146,13 @@ void miniGit::commit()
     {
         //logic to check if file already exists
         //logic to check if files are the exact same
+        bool difference = false;
         string tmp = ".minigit/" + SLL->fileName + SLL->fileVersion;
         fstream file;
         file.open(tmp.c_str());
         if(file.fail())
         { //if file doesn't already exist in .minigit directory adds the file.
-            copyLine = "cp " + SLL->fileName +" .minigit/" + SLL->fileName + SLL->fileVersion;
+            copyLine = "cp " + SLL->fileName +" .minigit/" + renameFile(SLL, SLL->fileName, SLL->fileVersion);
             system(copyLine.c_str());
         }
         else
@@ -169,6 +181,7 @@ void miniGit::commit()
                     SLL->fileVersion = to_string(fileV);
                 }
                 copyLine = "cp " + SLL->fileName +" .minigit/" + SLL->fileName + SLL->fileVersion;
+                // copyLine = "cp " + SLL->fileName +" .minigit/" + renameFile(SLL, SLL->fileName, SLL->fileVersion);
                 system(copyLine.c_str());   
             }
             // file.close();
@@ -189,4 +202,5 @@ void miniGit::commit()
         copy = SLL;
         SLL = SLL->next;
     }
+    //cout << copyLine << endl;
 }
