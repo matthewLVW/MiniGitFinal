@@ -45,10 +45,11 @@ class miniGit
         ~miniGit();
         void init();
         doublyNode *currCommit(int commit);
-        bool checkFile(string file);
+        bool checkFile(string file, int commit);
         void addFile(doublyNode *Dnode, string fileName);
-        void removeFile(string file);
+        void removeFile(string file, int commit);
         void printDS();
+        void copyList(doublyNode *Dnode, singlyNode *OG);
         void commit(int num_commit);
         doublyNode *addDDnode(int incrementCommit);
         

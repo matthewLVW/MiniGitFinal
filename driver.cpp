@@ -9,8 +9,8 @@ int main()
 {
     int exit, num_commit = 0;
     miniGit git;
-    doublyNode *dNode;
-    string exitStr, fileName;
+    doublyNode *dNode = nullptr;
+    string exitStr = "", fileName = "";
     ifstream checkFileName;
     bool fileExists = false;
     do
@@ -46,19 +46,17 @@ int main()
                     }
                     else
                     {
-                        fileExists = true;
+                        // fileExists = true;
+                        break;
                     }
-                }while(!fileExists);
-                if (git.checkFile(fileName))
+                }while(checkFileName.fail());
+                if (num_commit > 0 && git.checkFile(fileName, num_commit))
                 {
                     cout << "File name already exist in current stage." << endl;
                 }
                 else
                 {
-                    // cout << num_commit << endl;
-                    // git.addFile(dNode, fileName);
                     git.addFile(git.currCommit(num_commit), fileName);
-                    //git.printDS();
                 }
                 checkFileName.close();
                 break;
@@ -66,9 +64,9 @@ int main()
             case 3://REMOVE--DONE
                 cout << "Enter file name you wish to remove: " << endl;
                 getline(cin, fileName);
-                if (git.checkFile(fileName))
+                if (git.checkFile(fileName, num_commit))
                 {
-                    git.removeFile(fileName);
+                    git.removeFile(fileName, num_commit);
                     //git.printDS();
                 }
                 else{cout << "File does not exist within the directory." << endl;}
