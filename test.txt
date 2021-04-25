@@ -1,3 +1,24 @@
 testing testing HELLO WORLD! Hello again Hello once more Hello mother-f
 Another change change once more test change made to test changes being made
 Some changes being made
+
+#miniGit::~miniGit()                             // Destructor         
+{
+    doublyNode *DLLremove = nullptr;
+    singlyNode *SLLremove = nullptr;
+    while (DLLhead != nullptr)
+    {
+        while(DLLremove->head != nullptr)
+        {
+            SLLremove = DLLremove->head->next;
+            delete DLLremove->head;
+            DLLremove->head = SLLremove;
+        }
+        DLLhead->previous = DLLhead;
+        delete DLLhead->previous;
+        if (DLLhead->next == nullptr){break;}
+        else{DLLhead = DLLhead->next;}
+    }
+    DLLremove = nullptr;
+    SLLremove = nullptr;
+}

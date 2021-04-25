@@ -141,7 +141,7 @@ string renameFile(singlyNode *name, string file, string version)    // Function 
     }
     return sub + "_" + name->fileVersion + type;                    // return the updated name (string string concatenation)
 }
-void miniGit::copyList(doublyNode *Dnode, singlyNode *OG)           // Function to copy over SLL (NOT COMPLETED)
+void miniGit::copyList(doublyNode *Dnode, singlyNode *OG)    // Function to copy over SLL (NOT COMPLETED)
 {
     if (Dnode->head == nullptr){
         // cout << "Dnode->head = null" << endl;

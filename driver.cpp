@@ -9,7 +9,7 @@ int main()
 {
     int exit, num_commit = 0;
     miniGit git;
-    doublyNode *dNode = new doublyNode;
+    // doublyNode *dNode = new doublyNode;
     string exitStr = "", fileName = "";
     ifstream checkFileName;
     bool fileExists = false;
@@ -31,16 +31,13 @@ int main()
             case 1://INIT--DONE
                 //git.init();
                 //dNode = git.addDDnode(num_commit);                          // Initialize empty repository
-                dNode->commitNumber = 0;
-                dNode->head = nullptr;
-                dNode->next = nullptr;
-                dNode->previous = nullptr;
-                git.init(dNode);
+                git.init(git.addDDnode(num_commit));
                 cout << "New respository initialized." << endl;
                 break;
             
             case 2://ADD--DONE
-                do{
+                do
+                {
                     fileExists = false;
                     cout << "Enter file name: " << endl;
                     getline(cin, fileName);
@@ -49,11 +46,7 @@ int main()
                     {
                         cout << "File does not exist." << endl;
                     }
-                    else
-                    {
-                        // fileExists = true;
-                        break;
-                    }
+                    else{break;}
                 }while(checkFileName.fail());
                 if (num_commit > 0 && git.checkFile(fileName, num_commit))
                 {
@@ -72,7 +65,6 @@ int main()
                 if (git.checkFile(fileName, num_commit))
                 {
                     git.removeFile(fileName, num_commit);
-                    //git.printDS();
                 }
                 else{cout << "File does not exist within the directory." << endl;}
                 break;
@@ -88,6 +80,7 @@ int main()
             
             case 6://EXIT--DONE
                 cout << "exit" << endl;
+                git.~miniGit();
                 fs::remove_all(".miniGit");
                 break;
             

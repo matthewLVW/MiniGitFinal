@@ -7,7 +7,10 @@
         "ios": "cpp",
         "filesystem": "cpp",
         "fstream": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "__bit_reference": "cpp",
+        "algorithm": "cpp",
+        "deque": "cpp"
     },
     "C_Cpp.default.cppStandard": "c++17"
 }
