@@ -13,8 +13,9 @@ miniGit::~miniGit()                             // Destructor
 {
     
 }
-void miniGit::init()                            // Initializing repository
+void miniGit::init(doublyNode *dNode)                            // Initializing repository
 {
+    DLLhead = dNode;
     fs::remove_all(".miniGit");                 // Remove the previous
     fs::create_directory(".miniGit");           // Initialize new
 }
@@ -126,11 +127,16 @@ string renameFile(singlyNode *name, string file, string version)    // Function 
 }
 void miniGit::copyList(doublyNode *Dnode, singlyNode *OG)    // Function to copy over SLL (NOT COMPLETED)
 {
-    if (Dnode->head == nullptr){return;}
+    if (Dnode->head == nullptr){
+        cout << "Dnode->head = null" << endl;
+        return;
+    }
     singlyNode *curr = OG;
     singlyNode *copy = new singlyNode;
-    Dnode->head = copy;
-    copy->next = nullptr;
+    //Dnode->head = copy;
+    //copy = Dnode->head;
+    Dnode->next->head = copy;
+    //copy->next = nullptr;
     while (curr != nullptr)
     {
 
@@ -143,6 +149,7 @@ void miniGit::copyList(doublyNode *Dnode, singlyNode *OG)    // Function to copy
         copy = temp;
         curr = curr->next;
     }
+    printDS();
 }
 doublyNode *miniGit::addDDnode(int incrementCommit)                 // Function to add DLL node after commiting
 {
@@ -233,7 +240,7 @@ void miniGit::commit(int num_commit)
         SLL = SLL->next;
     }
     DLL->next = addDDnode(num_commit);
-    copyList(DLL->next, DLL->head);
+    copyList(DLL, DLL->head);
     // DLL->commitNumber++;
     // addDDnode(DLL, DLL->commitNumber);
     // doublyNode *comm = new doublyNode;

@@ -9,7 +9,7 @@ int main()
 {
     int exit, num_commit = 0;
     miniGit git;
-    doublyNode *dNode = nullptr;
+    doublyNode *dNode = new doublyNode;
     string exitStr = "", fileName = "";
     ifstream checkFileName;
     bool fileExists = false;
@@ -29,8 +29,13 @@ int main()
         switch(exit)
         {
             case 1://INIT--DONE
-                git.init();
-                dNode = git.addDDnode(num_commit);                          // Initialize empty repository
+                //git.init();
+                //dNode = git.addDDnode(num_commit);                          // Initialize empty repository
+                dNode->commitNumber = 0;
+                dNode->head = nullptr;
+                dNode->next = nullptr;
+                dNode->previous = nullptr;
+                git.init(dNode);
                 cout << "New respository initialized." << endl;
                 break;
             
@@ -83,6 +88,7 @@ int main()
             
             case 6://EXIT--DONE
                 cout << "exit" << endl;
+                fs::remove_all(".miniGit");
                 break;
             
             case 7:
