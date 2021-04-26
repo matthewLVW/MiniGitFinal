@@ -9,7 +9,7 @@ int main()
 {
     int exit, num_commit = 0;
     miniGit git;
-    doublyNode *dNode = new doublyNode;
+    /* doublyNode *dNode = new doublyNode; */
     string exitStr = "", fileName = "";
     ifstream checkFileName;
     bool fileExists = false;
@@ -31,11 +31,12 @@ int main()
             case 1://INIT--DONE
                 //git.init();
                 //dNode = git.addDDnode(num_commit);                          // Initialize empty repository
-                dNode->commitNumber = 0;
+                /* dNode->commitNumber = 0;
                 dNode->head = nullptr;
                 dNode->next = nullptr;
-                dNode->previous = nullptr;
-                git.init(dNode);
+                dNode->previous = nullptr; */
+                //git.init(dNode);
+                git.init(git.addDDnode(num_commit));
                 cout << "New respository initialized." << endl;
                 break;
             
@@ -83,12 +84,23 @@ int main()
                 break;
             
             case 5://CHECKOUT--IN PROGRESS
-                cout << "case 5" << endl;
+                cout << "Are you sure you wish to checkout? *this action will overwrite the current directory* (y/n)"<<endl;
+                char checkout;
+                cin>>checkout;
+                if(checkout = 'y'){
+                    cout<<"Which commit would you like to checkout?"<<endl;
+                int commitnumber;
+                cin>>commitnumber;
+                git.checkout(commitnumber);
                 break;
-            
+                }
+                else{
+                break;
+                }
             case 6://EXIT--DONE
                 cout << "exit" << endl;
                 fs::remove_all(".miniGit");
+                git.~miniGit();
                 break;
             
             case 7:
