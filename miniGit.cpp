@@ -285,7 +285,7 @@ void miniGit::checkout(int commitnumber){
 string localDirectory = fs::current_path();
 string removeline = "rm " + localDirectory+"/*";
 fstream file;
-string copied;
+string copied,postcopy,postcopy2;
 //system(removeline.c_str());
  doublyNode *crawler = DLLhead;
 while(crawler->commitNumber != commitnumber){
@@ -304,12 +304,20 @@ system(copied.c_str());
 else{
 string remove = "rm " + localDirectory + "/" + tmp->fileName;
 system(remove.c_str());
+postcopy=copied;
+postcopy2=copied;
 copied = "cp " + copied + " " + localDirectory;
 system(copied.c_str());
+postcopy = "mv " + postcopy +" " + tmp->fileName;
+system(postcopy.c_str());
+postcopy2= "rm " + localDirectory + "/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
+system(postcopy2.c_str());
 }
 tmp=tmp->next;
 file.close();
+
 }
 
 }
+
 
