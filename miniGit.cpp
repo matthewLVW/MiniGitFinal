@@ -172,9 +172,10 @@ void miniGit::copyList(doublyNode *Dnode, singlyNode *OG)    // Function to copy
 }
 doublyNode *miniGit::addDDnode(int incrementCommit)                 // Function to add DLL node after commiting
 {
+   cout<<incrementCommit<<endl;
     doublyNode *NewCommit = new doublyNode;                         // Dynamically allocate new DLL node
     NewCommit->commitNumber = incrementCommit;
-    NewCommit->head=nullptr;                      // Set all of it's data members accordingly
+    NewCommit->head=nullptr;                                        // Set all of it's data members accordingly
     NewCommit->next = nullptr;                                      // initialize initial pointer
     NewCommit->previous = nullptr;                                  // initialize initial pointer
     if (DLLhead == nullptr)                                         // If the DLL is empty
@@ -280,44 +281,26 @@ void miniGit::commit(int num_commit)
     // }
     //cout << copyLine << endl;
 }
-
-void miniGit::checkout(int commitnumber){
-string localDirectory = fs::current_path();
-string removeline = "rm " + localDirectory+"/*";
-fstream file;
-string copied,postcopy,postcopy2;
-//system(removeline.c_str());
- doublyNode *crawler = DLLhead;
-while(crawler->commitNumber != commitnumber){
-    crawler = crawler->next;
+void miniGit::checkout(int commitnumber)
+{
+    string localDirectory = fs::current_path();
+    string removeline = "rm " + localDirectory+"/*";
+    fstream file;
+    string copied,postcopy,postcopy2;
+    doublyNode *crawler = currCommit(commitnumber);
+    singlyNode *tmp = crawler->head;
+    string word;
+    while(tmp != nullptr)
+    {
+        string copied = localDirectory + "/.minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
+        file.open(copied);
+        ofstream overWrite(tmp->fileName);
+        while (getline(file, word))
+        {
+            overWrite << word << endl;
+        }
+        tmp=tmp->next;
+        overWrite.close();
+        file.close();
+    }
 }
-singlyNode *tmp = crawler->head;
-while(tmp!=nullptr){
-copied = localDirectory + "/.minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
-file.open(tmp->fileName);
-if(file.fail()){
-    cout<<tmp->fileName<<endl;
-    cout<<"test"<<endl;
-copied = "cp " + copied + " " + localDirectory;
-system(copied.c_str());
-}
-else{
-string remove = "rm " + localDirectory + "/" + tmp->fileName;
-system(remove.c_str());
-postcopy=copied;
-postcopy2=copied;
-copied = "cp " + copied + " " + localDirectory;
-system(copied.c_str());
-postcopy = "mv " + postcopy +" " + tmp->fileName;
-system(postcopy.c_str());
-postcopy2= "rm " + localDirectory + "/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
-system(postcopy2.c_str());
-}
-tmp=tmp->next;
-file.close();
-
-}
-
-}
-
-
