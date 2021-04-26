@@ -75,7 +75,8 @@ int main()
                 break;
             
             case 5://CHECKOUT--IN PROGRESS
-                cout << "case 5" << endl;
+        
+                cout << "Enter the s" << endl;
                 break;
             
             case 6://EXIT--DONE

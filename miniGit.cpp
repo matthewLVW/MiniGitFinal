@@ -1,7 +1,7 @@
 #include <iostream>
+#include "miniGit.hpp"
 #include <filesystem>
 #include <fstream>
-#include "miniGit.hpp"
 
 namespace fs = std::filesystem;
 
@@ -32,7 +32,7 @@ miniGit::~miniGit()                             // class destructor to deallocat
 }
 void miniGit::init(doublyNode *dNode)           // Initializing repository
 {
-    DLLhead = dNode;                            // set the head of doubly LL to be the node we read in
+    DLLhead = dNode;
     fs::remove_all(".miniGit");                 // Remove the previous
     fs::create_directory(".miniGit");           // Initialize new
 }
@@ -84,7 +84,6 @@ void miniGit::addFile(doublyNode *Dnode, string fileName)   // Function to add f
             crawler = crawler->next;                        // Increment crawler point
         }
         crawler->next = insert;                             // Insert at the end
-        insert->next = nullptr;
     }
     return;                                                 // Exit function
 }
@@ -122,11 +121,11 @@ void miniGit::printDS()                                     // Function to print
         while(slltmp != nullptr)                            // Traverse the SLL
         {                                                   // Print the current fiel
             cout << "[" << slltmp->fileVersion <<"_" << slltmp->fileName << "| -]-> ";
-            slltmp = slltmp->next;
+            slltmp = slltmp->next;                          // Increment SLL pointer
         }
-    cout<< "NULL" << endl;
-    DLL = DLL->next;
-    }while(DLL != nullptr);
+    cout<< "NULL" << endl;                                  // Last node's pointer is pointer to node
+    DLL = DLL->next;                                        // Increment DLL pointer
+    }while(DLL != nullptr);                                 // Traverse until we hit the last pointer
 }
 string renameFile(singlyNode *name, string file, string version)    // Function to rename the file
 {
@@ -143,29 +142,30 @@ string renameFile(singlyNode *name, string file, string version)    // Function 
 }
 void miniGit::copyList(doublyNode *Dnode, singlyNode *OG)           // Function to copy over SLL (NOT COMPLETED)
 {
-    if (Dnode->head == nullptr){
-        // cout << "Dnode->head = null" << endl;
-        return;
-    }
-    singlyNode *curr = OG;
-    singlyNode *copy = new singlyNode;
-    //Dnode->head = copy;
-    //copy = Dnode->head;
-    Dnode->next->head = copy;
-    //copy->next = nullptr;
-    while (curr != nullptr)
+    if (Dnode->head == nullptr){return;}                            // if the original's list's head is null, means empty SLL
+    singlyNode *curr = OG;                                          // curr is a traversal pointer to start at where OG is
+    singlyNode *copy = new singlyNode;                              // Dynamically allocate a memory for a new node
+    Dnode->next->head = copy;                                       // set the next DLL node to be new node
+    while (curr != nullptr)                                         // Traverse the previous (last commit SLL)
     {
-
-        singlyNode *temp = new singlyNode;
-        temp->next = nullptr;
-        copy->fileName = OG->fileName;
-        copy->fileVersion = OG->fileVersion;
-        copy->next = OG->next;
-        copy = copy->next;
-        copy = temp;
-        curr = curr->next;
+        if(curr->next == nullptr)                                   // If there's only one node in the LL
+        {
+            copy->fileName = curr->fileName;                        // Copy all the data over
+            copy->fileVersion = curr->fileVersion;
+            break;                                                  // break out of the loop
+        }
+        else                                                        // Otherwise if we have to copy multiple nodes
+        {
+            singlyNode *temp = new singlyNode;                      // Dynamically allocate new node nevery loop
+            temp->next = nullptr;                                   // set temp next to null
+            copy->fileName = curr->fileName;                        // copy over all the data
+            copy->fileVersion = curr->fileVersion;
+            copy->next = temp;                                      // set copy next pointer (to null)
+            copy = copy->next;                                      // increment copy pointer
+            curr = curr->next;                                      // increment curr pointer
+        }
     }
-    printDS();
+    // printDS();
 }
 doublyNode *miniGit::addDDnode(int incrementCommit)                 // Function to add DLL node after commiting
 {
@@ -256,4 +256,37 @@ void miniGit::commit(int num_commit)
     }
     DLL->next = addDDnode(num_commit);
     copyList(DLL, DLL->head);
+}
+void miniGit::checkout(int commitnumber)
+{
+    string localDirectory = fs::current_path();
+    string removeline = "rm " + localDirectory+"/*";
+    fstream file;
+    //system(removeline.c_str());
+    doublyNode *crawler = currCommit(commitnumber);
+    // while(crawler->commitNumber != commitnumber)
+    // {
+    //     crawler = crawler->next;
+    // }
+    singlyNode *tmp = crawler->head;
+    while(tmp != nullptr)
+    {
+        string copied = localDirectory + "/.minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
+        file.open(tmp->fileName);
+        if(file.fail())
+        {
+            cout<<"test"<<endl;
+            copied = "cp " + copied + " " + localDirectory;
+            system(copied.c_str());
+        }
+        else
+        {
+            string remove = "rm " + localDirectory + "/" + tmp->fileName;
+            system(remove.c_str());
+            copied = "cp " + copied + " " + localDirectory;
+            system(copied.c_str());
+        }
+        tmp=tmp->next;
+    }
+
 }

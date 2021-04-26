@@ -15,7 +15,6 @@ struct doublyNode
     doublyNode * previous;
     doublyNode * next;
 };
-
 class miniGit
 {
     private:
@@ -35,5 +34,5 @@ class miniGit
         void copyList(doublyNode *Dnode, singlyNode *OG);
         void commit(int num_commit);
         doublyNode *addDDnode(int incrementCommit);
-        
+        void checkout(int commitnumber);
 };
