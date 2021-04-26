@@ -1,3 +1,9 @@
+/*
+CSCI 2270 Spring 21
+Final Project
+Group Members: Bach Nguyen, Tyler Curnow and Matthew Van Winkle
+*/
+
 #include <iostream>
 #include "miniGit.hpp"
 #include <filesystem>
