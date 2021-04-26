@@ -133,21 +133,23 @@ void miniGit::copyList(doublyNode *Dnode, singlyNode *OG)    // Function to copy
     }
     singlyNode *curr = OG;
     singlyNode *copy = new singlyNode;
-    //Dnode->head = copy;
-    //copy = Dnode->head;
     Dnode->next->head = copy;
-    //copy->next = nullptr;
     while (curr != nullptr)
     {
-
+        if(curr->next == nullptr){
+            copy->fileName = curr->fileName;
+            copy->fileVersion = curr->fileVersion;
+            break;
+        }
+        else{
         singlyNode *temp = new singlyNode;
         temp->next = nullptr;
-        copy->fileName = OG->fileName;
-        copy->fileVersion = OG->fileVersion;
-        copy->next = OG->next;
+        copy->fileName = curr->fileName;
+        copy->fileVersion = curr->fileVersion;
+        copy->next = temp;
         copy = copy->next;
-        copy = temp;
         curr = curr->next;
+        }
     }
     printDS();
 }
