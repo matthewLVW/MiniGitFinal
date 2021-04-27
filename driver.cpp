@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-    int exit, num_commit,checkout_commit = 0;
+    int exit, num_commit=0,checkout_commit = 0;
     miniGit git;
     /* doublyNode *dNode = new doublyNode; */
     string exitStr = "", fileName = "";
