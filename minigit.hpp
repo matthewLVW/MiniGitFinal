@@ -50,5 +50,6 @@ class miniGit
         void copyList(doublyNode *Dnode, singlyNode *OG);
         void commit(int num_commit);
         doublyNode *addDDnode(int incrementCommit);
+        void checkout(int commitNumber);
         
 };

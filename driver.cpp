@@ -7,9 +7,9 @@ using namespace std;
 
 int main()
 {
-    int exit, num_commit = 0;
+    int exit, num_commit,recent_commit = 0;
     miniGit git;
-    doublyNode *dNode = new doublyNode;
+    /* doublyNode *dNode = new doublyNode; */
     string exitStr = "", fileName = "";
     ifstream checkFileName;
     bool fileExists = false;
@@ -31,15 +31,20 @@ int main()
             case 1://INIT--DONE
                 //git.init();
                 //dNode = git.addDDnode(num_commit);                          // Initialize empty repository
-                dNode->commitNumber = 0;
+                /* dNode->commitNumber = 0;
                 dNode->head = nullptr;
                 dNode->next = nullptr;
-                dNode->previous = nullptr;
-                git.init(dNode);
+                dNode->previous = nullptr; */
+                //git.init(dNode);
+                git.init(git.addDDnode(num_commit));
                 cout << "New respository initialized." << endl;
                 break;
             
             case 2://ADD--DONE
+                if(recent_commit!=num_commit){
+                    cout<<"can't add while not in most recent commit"<<endl;
+                    break;
+                }
                 do{
                     fileExists = false;
                     cout << "Enter file name: " << endl;
@@ -67,6 +72,10 @@ int main()
                 break;
             
             case 3://REMOVE--DONE
+            if(recent_commit!=num_commit){
+                    cout<<"can't remove while not in most recent commit"<<endl;
+                    break;
+            }
                 cout << "Enter file name you wish to remove: " << endl;
                 getline(cin, fileName);
                 if (git.checkFile(fileName, num_commit))
@@ -78,17 +87,34 @@ int main()
                 break;
             
             case 4://COMMIT--IN PROGRESS
+            if(recent_commit!=num_commit){
+                    cout<<"can't commit while not in most recent commit"<<endl;
+                    break;
+            }
                 num_commit++;
+                recent_commit++;
                 git.commit(num_commit);
                 break;
             
             case 5://CHECKOUT--IN PROGRESS
-                cout << "case 5" << endl;
+                cout << "Are you sure you wish to checkout? *this action will overwrite the current directory* (y/n)"<<endl;
+                char checkout;
+                cin>>checkout;
+                cin.ignore();
+                if(checkout == 'y'){
+                    cout<<"Which commit would you like to checkout?"<<endl;
+                cin>>recent_commit;
+                cin.ignore();
+                git.checkout(recent_commit);
                 break;
-            
+                }
+                else{
+                break;
+                }
             case 6://EXIT--DONE
                 cout << "exit" << endl;
                 fs::remove_all(".miniGit");
+                git.~miniGit();
                 break;
             
             case 7:

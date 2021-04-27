@@ -9,9 +9,26 @@ miniGit::miniGit()                              // Constructor
 {
     DLLhead = nullptr;                          // Set Doubly LL head to null;
 }
-miniGit::~miniGit()                             // Destructor         
+miniGit::~miniGit()                             // class destructor to deallocate data structures   
 {
-    
+    doublyNode *DLLremove = nullptr;            // Declare and initialize all the temp pointers we will use
+    singlyNode *SLLremove = nullptr;
+    while (DLLhead != nullptr)                  // Traverse the doubly link list
+    {
+        while(DLLhead->head != nullptr)         // nested while loop to traverse the singly link list
+        {
+            cout << "Deleting: [" << DLLhead->head->fileName << "]" << endl;
+            SLLremove = DLLhead->head->next;    // store the next node in the SLL to our temp pointer
+            delete DLLhead->head;               // Deallocate the current head of the SLL
+            DLLhead->head = SLLremove;          // reassign head to be the node stored in our temp pointer
+        }
+        cout << "Deleting: [" << DLLhead->commitNumber << "]" << endl;
+        DLLremove = DLLhead->next;              // Once we are done deallocating the SLL according to the current DLL
+        delete DLLhead;                         // We deallocate that current node (current head)
+        DLLhead = DLLremove;                    // reassign the head to what we stored in our DLL temp ointer
+    }
+    SLLremove = nullptr;                        // set both of our temp pointer to null for good measures
+    DLLremove = nullptr;
 }
 void miniGit::init(doublyNode *dNode)                            // Initializing repository
 {
@@ -156,7 +173,8 @@ void miniGit::copyList(doublyNode *Dnode, singlyNode *OG)    // Function to copy
 doublyNode *miniGit::addDDnode(int incrementCommit)                 // Function to add DLL node after commiting
 {
     doublyNode *NewCommit = new doublyNode;                         // Dynamically allocate new DLL node
-    NewCommit->commitNumber = incrementCommit;                      // Set all of it's data members accordingly
+    NewCommit->commitNumber = incrementCommit;
+    NewCommit->head=nullptr;                      // Set all of it's data members accordingly
     NewCommit->next = nullptr;                                      // initialize initial pointer
     NewCommit->previous = nullptr;                                  // initialize initial pointer
     if (DLLhead == nullptr)                                         // If the DLL is empty
@@ -261,4 +279,46 @@ void miniGit::commit(int num_commit)
     //     SLL = SLL->next;
     // }
     //cout << copyLine << endl;
+}
+
+void miniGit::checkout(int commitnumber){
+string localDirectory = fs::current_path();
+string removeline = "rm " + localDirectory+"/*";
+fstream file;
+string copied,postcopy,postcopy2;
+//system(removeline.c_str());
+ doublyNode *crawler = DLLhead;
+while(crawler->commitNumber != commitnumber){
+    crawler = crawler->next;
+}
+singlyNode *tmp = crawler->head;
+while(tmp!=nullptr){
+copied = localDirectory + "/.minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
+file.open(tmp->fileName);
+if(file.fail()){
+    cout<<tmp->fileName<<endl;
+    cout<<"test"<<endl;
+copied = "cp " + copied + " " + localDirectory;
+system(copied.c_str());
+}
+else{
+string remove = "rm " + localDirectory + "/" + tmp->fileName;
+system(remove.c_str());
+postcopy=copied;
+postcopy2=copied;
+copied = "cp " + copied + " " + localDirectory;
+system(copied.c_str());
+postcopy = "mv " + postcopy +" " + tmp->fileName;
+system(postcopy.c_str());
+ postcopy2= "rm " + localDirectory + "/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
+system(postcopy2.c_str()); 
+
+postcopy = "cp " + localDirectory + "/" + tmp->fileName + " " + localDirectory + "/.minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
+system(postcopy.c_str());
+}
+tmp=tmp->next;
+file.close();
+
+}
+
 }
