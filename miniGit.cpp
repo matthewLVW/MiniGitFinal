@@ -3,7 +3,7 @@ CSCI 2270 Spring 21
 Final Project
 Group Members: Bach Nguyen, Tyler Curnow and Matthew Van Winkle
 */
-
+  
 #include <iostream>
 #include "miniGit.hpp"
 #include <filesystem>
@@ -220,13 +220,11 @@ void miniGit::commit(int num_commit)
         //logic to check if file already exists
         //logic to check if files are the exact same
         bool difference = false;
-        // string tmp = ".minigit/" + SLL->fileName + SLL->fileVersion;
         string tmp = ".minigit/" + renameFile(SLL, SLL->fileName, SLL->fileVersion);
         fstream file;
         file.open(tmp.c_str());
         if(file.fail())
         { //if file doesn't already exist in .minigit directory adds the file.
-            //copyLine = "cp " + SLL->fileName +" .minigit/" + SLL->fileName + SLL->fileVersion;
             copyLine = "cp " + SLL->fileName +" .minigit/" + renameFile(SLL, SLL->fileName, SLL->fileVersion);
             system(copyLine.c_str());
         }
@@ -255,36 +253,14 @@ void miniGit::commit(int num_commit)
                 {
                     SLL->fileVersion = to_string(fileV);
                 }
-                // cout << "Updating file version: " << SLL->fileVersion << endl;
-                // copyLine = "cp " + SLL->fileName +" .minigit/" + SLL->fileName + SLL->fileVersion;
                 copyLine = "cp " + SLL->fileName +" .minigit/" + renameFile(SLL, SLL->fileName, SLL->fileVersion);
                 system(copyLine.c_str());   
-            }
-            // file.close();
-            // file.open(tmp.c_str());    
+            }   
         }
         SLL = SLL->next;
     }
     DLL->next = addDDnode(num_commit);
     copyList(DLL, DLL->head);
-    // DLL->commitNumber++;
-    // addDDnode(DLL, DLL->commitNumber);
-    // doublyNode *comm = new doublyNode;
-    // singlyNode *copy = new singlyNode;
-    // comm->commitNumber = DLL->commitNumber++;
-    // comm->head = copy;
-    // // addDDnode(comm);
-    // DLL->next = comm;
-    // comm->next = nullptr;
-    // comm->previous = DLL;
-    // SLL = DLL->head;
-    // while(SLL != nullptr)
-    // {
-    //     copy = new singlyNode;
-    //     copy = SLL;
-    //     SLL = SLL->next;
-    // }
-    //cout << copyLine << endl;
 }
 
 void miniGit::checkout(int commitnumber){
@@ -320,7 +296,7 @@ void miniGit::checkout(int commitnumber){
             postcopy = "cp " + localDirectory + "/" + tmp->fileName + " " + localDirectory + "/.minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
             system(postcopy.c_str());
         }
-        tmp=tmp->next;
-        file.close();
+    tmp=tmp->next;
+    file.close();
     }
 }
