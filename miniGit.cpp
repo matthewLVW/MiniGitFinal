@@ -172,9 +172,10 @@ void miniGit::copyList(doublyNode *Dnode, singlyNode *OG)    // Function to copy
 }
 doublyNode *miniGit::addDDnode(int incrementCommit)                 // Function to add DLL node after commiting
 {
+   cout<<incrementCommit<<endl;
     doublyNode *NewCommit = new doublyNode;                         // Dynamically allocate new DLL node
     NewCommit->commitNumber = incrementCommit;
-    NewCommit->head=nullptr;                      // Set all of it's data members accordingly
+    NewCommit->head=nullptr;                                        // Set all of it's data members accordingly
     NewCommit->next = nullptr;                                      // initialize initial pointer
     NewCommit->previous = nullptr;                                  // initialize initial pointer
     if (DLLhead == nullptr)                                         // If the DLL is empty
@@ -280,45 +281,105 @@ void miniGit::commit(int num_commit)
     // }
     //cout << copyLine << endl;
 }
-
-void miniGit::checkout(int commitnumber){
-string localDirectory = fs::current_path();
-string removeline = "rm " + localDirectory+"/*";
-fstream file;
-string copied,postcopy,postcopy2;
-//system(removeline.c_str());
- doublyNode *crawler = DLLhead;
-while(crawler->commitNumber != commitnumber){
-    crawler = crawler->next;
+void miniGit::checkout(int commitnumber)
+{
+    string localDirectory = fs::current_path();
+    string removeline = "rm " + localDirectory+"/*";
+    fstream file;
+    string copied,postcopy,postcopy2;
+    doublyNode *crawler = currCommit(commitnumber);
+    singlyNode *tmp = crawler->head;
+    string word;
+    while(tmp != nullptr)
+    {
+        string copied = localDirectory + "/.minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
+        file.open(copied);
+        ofstream overWrite(tmp->fileName);
+        while (getline(file, word))
+        {
+            overWrite << word << endl;
+        }
+        tmp=tmp->next;
+        overWrite.close();
+        file.close();
+    }
 }
-singlyNode *tmp = crawler->head;
-while(tmp!=nullptr){
-copied = localDirectory + "/.minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
-file.open(tmp->fileName);
-if(file.fail()){
-    cout<<tmp->fileName<<endl;
-    cout<<"test"<<endl;
-copied = "cp " + copied + " " + localDirectory;
-system(copied.c_str());
+
+void miniGit::diff(string filename,int commitnumber){
+    ifstream(file);
+    ifstream(file2);
+    string filename2;
+    file.open(filename);
+    singlyNode* tmp = currCommit(commitnumber)->head;
+    while(tmp!=nullptr){
+        if(tmp->fileName == filename){
+            filename2 = ".minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
+            file2.open(filename2.c_str());
+            break;
+        }
+        tmp=tmp->next;
+    }
+string word,word1;
+while (!file.eof())
+            {
+                getline(file, word);
+                getline(file2,word1);
+                if (word != word1)
+                {
+                    cout<<"A difference did occur between this line in the given file: "<<word<<endl;
+                    cout<<"and this line in the committed file: "<<word1<<endl;
+                    break;
+                }
+    
+
+            }
+} 
+
+
+bool miniGit::difff(string filename,int commitnumber){
+    ifstream(file);
+    ifstream(file2);
+    string filename2;
+    file.open(filename);
+    singlyNode* tmp = currCommit(commitnumber)->head;
+    while(tmp!=nullptr){
+        if(tmp->fileName == filename){
+            filename2 = ".minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
+            file2.open(filename2.c_str());
+            break;
+        }
+        tmp=tmp->next;
+    }
+string word,word1;
+while (!file.eof())
+            {
+                getline(file, word);
+                getline(file2,word1);
+                if (word != word1)
+                {
+                   return true;
+                    break;
+                }
+    
+
+            }
+return false;          
+} 
+
+void miniGit::status(int commitnumber){
+singlyNode* tmp = currCommit(commitnumber)->head;
+fstream file;
+fstream file2;
+string filename2,word,word1;
+bool difference = false;
+while(tmp!=NULL){
+bool print = difff(tmp->fileName,commitnumber);
+if(print){
+    cout<<tmp->fileName<< " has a difference."<<endl;
 }
 else{
-string remove = "rm " + localDirectory + "/" + tmp->fileName;
-system(remove.c_str());
-postcopy=copied;
-postcopy2=copied;
-copied = "cp " + copied + " " + localDirectory;
-system(copied.c_str());
-postcopy = "mv " + postcopy +" " + tmp->fileName;
-system(postcopy.c_str());
- postcopy2= "rm " + localDirectory + "/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
-system(postcopy2.c_str()); 
-
-postcopy = "cp " + localDirectory + "/" + tmp->fileName + " " + localDirectory + "/.minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
-system(postcopy.c_str());
+    cout<<tmp->fileName<< " did not have a difference."<<endl;
 }
 tmp=tmp->next;
-file.close();
-
 }
-
 }

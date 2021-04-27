@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-    int exit, num_commit=0,recent_commit = 0;
+    int exit, num_commit,checkout_commit = 0;
     miniGit git;
     /* doublyNode *dNode = new doublyNode; */
     string exitStr = "", fileName = "";
@@ -18,13 +18,13 @@ int main()
         do
         {
             cout << "Select a numerical option:\n+===== Main Menu =====+" << endl;
-            cout << "1. init\n2. add\n3. remove\n4. commit\n5. checkout\n6. quit\n7. print\n+----------------------+" << endl;
+            cout << "1. init\n2. add\n3. remove\n4. commit\n5. checkout\n6. quit\n7. print\n8.Diff and Status\n+----------------------+" << endl;
             getline(cin,exitStr);
-            if(exitStr != "1" && exitStr != "2" && exitStr != "3" && exitStr != "4" && exitStr != "5" && exitStr != "6" && exitStr != "7")
+            if(exitStr != "1" && exitStr != "2" && exitStr != "3" && exitStr != "4" && exitStr != "5" && exitStr != "6" && exitStr != "7" && exitStr != "8")
             {
                 cout << "Invalid Input" << endl;
             }
-        }while(exitStr != "1" && exitStr != "2" && exitStr != "3" && exitStr != "4" && exitStr != "5" && exitStr != "6" && exitStr != "7");
+        }while(exitStr != "1" && exitStr != "2" && exitStr != "3" && exitStr != "4" && exitStr != "5" && exitStr != "6" && exitStr != "7" && exitStr != "8");
         exit = stoi(exitStr);
         switch(exit)
         {
@@ -41,10 +41,10 @@ int main()
                 break;
             
             case 2://ADD--DONE
-                if(recent_commit!=num_commit){
-                    cout<<"can't add while not in most recent commit"<<endl;
-                    break;
-                }
+                if(checkout_commit != num_commit){
+                cout<<"Cannot add file while checking out a previous commit"<<endl;
+                break;
+            }
                 do{
                     fileExists = false;
                     cout << "Enter file name: " << endl;
@@ -72,9 +72,9 @@ int main()
                 break;
             
             case 3://REMOVE--DONE
-            if(recent_commit!=num_commit){
-                    cout<<"can't remove while not in most recent commit"<<endl;
-                    break;
+                if(checkout_commit != num_commit){
+                cout<<"Cannot remove file while checking out a previous commit"<<endl;
+                break;
             }
                 cout << "Enter file name you wish to remove: " << endl;
                 getline(cin, fileName);
@@ -86,13 +86,13 @@ int main()
                 else{cout << "File does not exist within the directory." << endl;}
                 break;
             
-            case 4://COMMIT--IN PROGRESS
-            if(recent_commit!=num_commit){
-                    cout<<"can't commit while not in most recent commit"<<endl;
-                    break;
+            case 4://COMMIT--Done
+            if(checkout_commit != num_commit){
+                cout<<"Cannot commit while checking out a previous commit"<<endl;
+                break;
             }
                 num_commit++;
-                recent_commit++;
+                checkout_commit++;
                 git.commit(num_commit);
                 break;
             
@@ -101,11 +101,11 @@ int main()
                 char checkout;
                 cin>>checkout;
                 cin.ignore();
-                if(checkout == 'y'){
+                if(checkout = 'y'){
                     cout<<"Which commit would you like to checkout?"<<endl;
-                cin>>recent_commit;
+                cin>>checkout_commit;
                 cin.ignore();
-                git.checkout(recent_commit);
+                git.checkout(checkout_commit);
                 break;
                 }
                 else{
@@ -119,6 +119,12 @@ int main()
             
             case 7:
                 git.printDS();
+                break;
+            case 8:
+                cout<<"Please enter a filename to check differences of: ";
+                getline(cin, fileName);
+                git.diff(fileName,num_commit-1);
+                git.status(num_commit-1);
                 break;
             
             default:
