@@ -23,12 +23,12 @@ miniGit::~miniGit()                             // class destructor to deallocat
     {
         while(DLLhead->head != nullptr)         // nested while loop to traverse the singly link list
         {
-            cout << "Deleting: [" << DLLhead->head->fileName << "]" << endl;
+            // cout << "Deleting: [" << DLLhead->head->fileName << "]" << endl;
             SLLremove = DLLhead->head->next;    // store the next node in the SLL to our temp pointer
             delete DLLhead->head;               // Deallocate the current head of the SLL
             DLLhead->head = SLLremove;          // reassign head to be the node stored in our temp pointer
         }
-        cout << "Deleting: [" << DLLhead->commitNumber << "]" << endl;
+        // cout << "Deleting: [" << DLLhead->commitNumber << "]" << endl;
         DLLremove = DLLhead->next;              // Once we are done deallocating the SLL according to the current DLL
         delete DLLhead;                         // We deallocate that current node (current head)
         DLLhead = DLLremove;                    // reassign the head to what we stored in our DLL temp ointer
@@ -36,7 +36,23 @@ miniGit::~miniGit()                             // class destructor to deallocat
     SLLremove = nullptr;                        // set both of our temp pointer to null for good measures
     DLLremove = nullptr;
 }
-void miniGit::init(doublyNode *dNode)                            // Initializing repository
+bool check_input(string input)                  // Function to check the inputs of the users, make sure they're valid
+{
+    if(input != "1" && input != "2" && input != "3" && input != "4" && input != "5" && input != "6" && input != "7" && input != "8")
+    {
+        return false;                           // return false if the input is not part of the option give
+    }
+    return true;                                // return true otherwise
+}
+void print_menu()                               // Function to print out the pain menu of the page
+{
+    cout << "+======= Main Menu =======+" << endl;
+    cout << "+Select a numerical option+" << endl;
+    cout << "1. Init\n2. Add\n3. Remove\n4. Commit" << endl;
+    cout << "5. Checkout\n6. Diff & Status\n7. Print\n8. Exit" << endl;
+    cout << "+--------------------------+" << endl;
+}
+void miniGit::init(doublyNode *dNode)           // Initializing repository
 {
     DLLhead = dNode;
     fs::remove_all(".miniGit");                 // Remove the previous
@@ -79,7 +95,6 @@ void miniGit::addFile(doublyNode *Dnode, string fileName)   // Function to add f
     insert->next = nullptr;                                 // set the initial ptr to null
     if (Dnode->head == nullptr)                             // If the SLL is empty
     {
-        cout << "Adding to head" << endl;
         Dnode->head = insert;                               // We insert at the head
     }
     else                                                    // Otherwise, we traverse to the end
@@ -119,21 +134,19 @@ void miniGit::removeFile(string file, int commit)           // Function to remov
 }
 void miniGit::printDS()                                     // Function to print entire DS for debugging purposes
 {
-    doublyNode *DLL = DLLhead;
-    do
+    doublyNode *DLL = DLLhead;                              // Declare and initialize a node to travese the DLL (start from head)
+    do                                                      // Do while loop to traverse the DLL
     {
-        singlyNode *slltmp = DLL->head;
-        cout <<"[C#: "<< DLL->commitNumber<< "| -]-> ";
-    //     cout <<"Files: ";
-        while(slltmp != nullptr)
-        {
+        singlyNode *slltmp = DLL->head;                     // Declare and initialize a node to traverse the SLL (start from head)
+        cout <<"[C#: "<< DLL->commitNumber<< "| -]-> ";     // print current DLL node
+        while(slltmp != nullptr)                            // Traverse the SLL
+        {                                                   // Print current SLL node
             cout << "[" << slltmp->fileVersion <<"_" << slltmp->fileName << "| -]-> ";
-            // << slltmp->fileVersion <<", ";
-            slltmp = slltmp->next;
+            slltmp = slltmp->next;                          // Increment SLL pointer
         }
-    cout<< "NULL" << endl;
-    DLL = DLL->next;
-    }while(DLL != nullptr);
+    cout<< "NULL" << endl;                                  // The last SLL pointer will point to NULL
+    DLL = DLL->next;                                        // Increment DLL pointer
+    }while(DLL != nullptr);                                 // Condition to exit
 }
 string renameFile(singlyNode *name, string file, string version)    // Function to rename the file
 {
@@ -148,12 +161,9 @@ string renameFile(singlyNode *name, string file, string version)    // Function 
     }
     return sub + "_" + name->fileVersion + type;                    // return the updated name (string string concatenation)
 }
-void miniGit::copyList(doublyNode *Dnode, singlyNode *OG)    // Function to copy over SLL (NOT COMPLETED)
+void miniGit::copyList(doublyNode *Dnode, singlyNode *OG)           // Function to copy over SLL (NOT COMPLETED)
 {
-    if (Dnode->head == nullptr){
-        cout << "Dnode->head = null" << endl;
-        return;
-    }
+    if (Dnode->head == nullptr){return;}
     singlyNode *curr = OG;
     singlyNode *copy = new singlyNode;
     Dnode->next->head = copy;
@@ -180,7 +190,7 @@ doublyNode *miniGit::addDDnode(int incrementCommit)                 // Function 
 {
     doublyNode *NewCommit = new doublyNode;                         // Dynamically allocate new DLL node
     NewCommit->commitNumber = incrementCommit;
-    NewCommit->head=nullptr;                      // Set all of it's data members accordingly
+    NewCommit->head=nullptr;                                        // Set all of it's data members accordingly
     NewCommit->next = nullptr;                                      // initialize initial pointer
     NewCommit->previous = nullptr;                                  // initialize initial pointer
     if (DLLhead == nullptr)                                         // If the DLL is empty
@@ -200,7 +210,7 @@ doublyNode *miniGit::addDDnode(int incrementCommit)                 // Function 
     }
     return NewCommit;                                               // return pointer to that node
 }
-void miniGit::commit(int num_commit)
+void miniGit::commit(int num_commit)                                // Function to commit changes per user's request
 {
     //go to current commit DLL node
     //Run through and for each file if it already exists (if it doesn't exist just add to .minigit) then check if changes have been made
@@ -208,81 +218,84 @@ void miniGit::commit(int num_commit)
     //if it is unchanged do nothing
     //Once you have done this for each file then:
     //create a new DLL Node with incremented commit number and port the SLL from the previous node to this one.
-    doublyNode *DLL = DLLhead;
-    string copyLine;
-    while(DLL->next != nullptr)
-    {
-        DLL = DLL->next;
+    doublyNode *DLL = DLLhead;                                      // Declare and initialize a DLL pointer to star from head
+    string copyLine;                                                // Declare a string variable
+    while(DLL->next != nullptr)                                     // Traverse until we are at the most current pointer (tail DLL node)
+    {                       
+        DLL = DLL->next;                                            // Increment DLL pointer
     }
-    singlyNode *SLL = DLL->head;
-    while(SLL != nullptr)
+    singlyNode *SLL = DLL->head;                                    // Declare and initialize a SLL pointer to start at head
+    while(SLL != nullptr)                                           // Traverse the SLL
     {
-        //logic to check if file already exists
-        //logic to check if files are the exact same
-        bool difference = false;
+        bool difference = false;                                    // Bool checker to see if the current file has been changed
         string tmp = ".minigit/" + renameFile(SLL, SLL->fileName, SLL->fileVersion);
-        fstream file;
-        file.open(tmp.c_str());
-        if(file.fail())
-        { //if file doesn't already exist in .minigit directory adds the file.
+        fstream file;                                               // Using fstream to open file
+        file.open(tmp.c_str());                                     // Open file
+        if(file.fail())                                             // If file does not exist in miniGit directory
+        {                                                           // if file doesn't already exist in .minigit directory
             copyLine = "cp " + SLL->fileName +" .minigit/" + renameFile(SLL, SLL->fileName, SLL->fileVersion);
-            system(copyLine.c_str());
+            system(copyLine.c_str());                               // We add the file in
         }
-        else
-        {//if file does exist:
-            ifstream file1(SLL->fileName);
-            string word, word1;
-            while (!file.eof())
+        else                                                        // Otherwise, if the file already exists
+        {                                                           
+            ifstream file1(SLL->fileName);                          // Open the current file in main directory
+            string word, word1;                                     // Use two string variable to store each words to compare
+            while (!file.eof())                                     // run until end of file
             {
-                getline(file, word);
-                getline(file1,word1);
-                if (word != word1)
+                getline(file, word);                                // Use getline to store word from commit file
+                getline(file1,word1);                               // Use geline to store word1 from original file
+                if (word != word1)                                  // If we found a difference (words do not match)
                 {
-                    difference = true;
-                    break;
+                    difference = true;                              // Turn bool checker to true
+                    break;                                          // break out of the loop
                 }
             }
-            if (difference)
+            if (difference)                                         // If the files do not match, we have to update the version
             {
-                int fileV = stoi(SLL->fileVersion) + 1;
-                if (fileV < 10)
+                int fileV = stoi(SLL->fileVersion) + 1;             // convert version to int and increment it by 1, store it in an int variable
+                if (fileV < 10)                                     // If file version is less than 10
                 {
-                    SLL->fileVersion = "0" + to_string(fileV); 
+                    SLL->fileVersion = "0" + to_string(fileV);      // we add an "0" at the beginning
                 }
                 else
                 {
-                    SLL->fileVersion = to_string(fileV);
-                }
+                    SLL->fileVersion = to_string(fileV);            // Otherwise, we assign it as is
+                }                                                   
                 copyLine = "cp " + SLL->fileName +" .minigit/" + renameFile(SLL, SLL->fileName, SLL->fileVersion);
-                system(copyLine.c_str());   
+                system(copyLine.c_str());                           // create a copy file with new version and the changes made
             }   
         }
-        SLL = SLL->next;
+        SLL = SLL->next;                                            // Increment SLL pointer
     }
-    DLL->next = addDDnode(num_commit);
-    copyList(DLL, DLL->head);
+    DLL->next = addDDnode(num_commit);                              // Create a new node and add it to the end of the commit DS (DLL)
+    copyList(DLL, DLL->head);                                       // deep copy of all of the SLL node from previous commit with updated version number
 }
 
-void miniGit::checkout(int commitnumber){
-    string localDirectory = fs::current_path();
-    string removeline = "rm " + localDirectory+"/*";
-    fstream file;
-    string copied,postcopy,postcopy2;
-    doublyNode *crawler = DLLhead;
-    while(crawler->commitNumber != commitnumber){
-        crawler = crawler->next;
+void miniGit::checkout(int commitnumber)                           // Function for check out (Matthew's implementation)
+{
+    string localDirectory = fs::current_path();                     // store the current directory by using current_path
+    string removeline = "rm " + localDirectory+ "/*";               // 
+    fstream file;                                                   // Declare an fstream object to open file
+    string copied,postcopy,postcopy2;                               // Declare all strings variable to use
+    doublyNode *crawler = DLLhead;                                  // declare a traversal pointer to start at the head DLL node
+    while(crawler->commitNumber != commitnumber)                    // Traverse until we are at the node of the commit number being passed through
+    {
+        crawler = crawler->next;                                    // increment counter if until we reach that node
     }
-    singlyNode *tmp = crawler->head;
-    while(tmp!=nullptr){
+    singlyNode *tmp = crawler->head;                                // 
+    while(tmp!=nullptr)
+    {
         copied = localDirectory + "/.minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
         file.open(tmp->fileName);
-        if(file.fail()){
-            cout<<tmp->fileName<<endl;
+        if(file.fail())
+        {
+            // cout<< tmp->fileName <<endl;
             cout<<"test"<<endl;
             copied = "cp " + copied + " " + localDirectory;
             system(copied.c_str());
         }
-        else{
+        else
+        {
             string remove = "rm " + localDirectory + "/" + tmp->fileName;
             system(remove.c_str());
             postcopy=copied;
@@ -298,5 +311,77 @@ void miniGit::checkout(int commitnumber){
         }
     tmp=tmp->next;
     file.close();
+    }
+}
+// void miniGit::checkout(int commitnumber)                         // Function for checkout (Bach's implementation)          
+// {
+//     fstream file;                                                // declare an fstream object to read in file
+//     string localDirectory = fs::current_path();                  // store the path to current directory
+//     doublyNode *crawler = currCommit(commitnumber);              // declare a traversal pointer & set it to the node of the read in commit number
+//     singlyNode *tmp = crawler->head;                             // set an SLL pointer to start at the head of the DLL
+//     string word;                                                 // string to store each line being read in
+//     while(tmp != nullptr)                                        // Traverse the SLL
+//     {                                                            // copied will be the specific in miniGit directory   
+//         string copied = localDirectory + "/.minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
+//         file.open(copied);                                       // Open that particular file
+//         ofstream overWrite(tmp->fileName);                       // declare an ofstream object and set it to open the main file
+//         while (getline(file, word))                              // traverse until the end of the miniGit file
+//         {
+//             overWrite << word << endl;                           // Overwrite the main file with the contents in the miniGit file
+//         }
+//         tmp=tmp->next;                                           // increment SLL traversal pointer
+//         overWrite.close();                                       // close file in miniGit file
+//         file.close();                                            // close file in main directory
+//     }
+// }
+bool miniGit::diff(string filename,int commitnumber)
+{
+    ifstream(file);
+    ifstream(file2);
+    file.open(filename);
+    singlyNode* tmp = currCommit(commitnumber)->head;
+    string filename2, word,word1;;
+    while(tmp != nullptr)
+    {
+        if(tmp->fileName == filename)
+        {
+            filename2 = ".minigit/" + renameFile(tmp, tmp->fileName, tmp->fileVersion);
+            file2.open(filename2.c_str());
+            break;
+        }
+        tmp=tmp->next;
+    }
+    while (!file.eof())
+    {
+        getline(file, word);
+        getline(file2,word1);
+        if (word != word1)
+        {
+            cout << "First diffence: " << word1 << endl;
+            return true;
+        }
+    }
+return false;          
+} 
+
+void miniGit::status(int commitnumber)
+{
+    singlyNode* tmp = currCommit(commitnumber)->head;
+    fstream file;
+    fstream file2;
+    string filename2,word,word1;
+    while(tmp!=NULL)
+    {
+        bool print = diff(tmp->fileName,commitnumber);
+        
+        if(print)
+        {
+            cout << tmp->fileName << " has a difference." << endl;
+        }
+        else
+        {
+            cout << tmp->fileName << " did not have a difference."<< endl;
+        }
+        tmp=tmp->next;
     }
 }

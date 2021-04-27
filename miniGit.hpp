@@ -55,5 +55,6 @@ class miniGit
         void commit(int num_commit);
         doublyNode *addDDnode(int incrementCommit);
         void checkout(int commitNumber);
-        
+        bool diff(string filename,int commitnumber);
+        void status(int commitnumber);
 };
