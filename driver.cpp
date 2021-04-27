@@ -69,7 +69,7 @@ int main()
             case 3:
                 if(recent_commit != num_commit)
                 {
-                    cout<<"can't remove while not in most recent commit"<<endl;
+                    cout<<"can't remove while not in most recent commit "<< endl;
                     break;
                 }
                 cout << "Enter file name you wish to remove: ";
@@ -121,15 +121,15 @@ int main()
                 break;
             
             case 8:
-                cout << "exit" << endl;
                 fs::remove_all(".miniGit");
                 git.~miniGit();
+                cout << "Exit program succesful. Goodbye." << endl;
                 break;
 
             default:
                 cout << "Invalid input" << endl;
                 break;
         }
-    }while(exit != 6);
+    }while(exit != 8);
     return 0;
 }

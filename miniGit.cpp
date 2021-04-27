@@ -94,7 +94,6 @@ void miniGit::addFile(doublyNode *Dnode, string fileName)           // Function 
     insert->next = nullptr;                                         // set the initial ptr to null
     if (Dnode->head == nullptr)                                     // If the SLL is empty
     {
-        cout << "Adding to head" << endl;
         Dnode->head = insert;                                       // We insert at the head
     }
     else                                                            // Otherwise, we traverse to the end
@@ -395,11 +394,11 @@ void miniGit::status(int commitnumber)
     {   
         if(check_difference(tmp->fileName,commitnumber))            // If check_difference returns true
         {
-            cout << "Modified:" << tmp->fileName << endl;           // We print the file name stating it has been modified
+            cout << tmp->fileName << " : [MODIFIED]" << endl;       // We print the file name stating it has been modified
         }   
         else                                                        // Otherwise
         {
-            cout << "Unchanged:" << tmp->fileName << endl;          // We print the file name stating it is unchanged
+            cout << tmp->fileName << " : [UNCHANGED]" << endl;      // We print the file name stating it is unchanged
         }
         tmp=tmp->next;                                              // go to the next node
     }
