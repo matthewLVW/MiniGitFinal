@@ -1,6 +1,6 @@
 CSCI 2270 Spring 2021
 Final Project: Mini-Git
-Group Members: Bach Nguyen, Tyler Curnow, Matthew Van Winkle.
+Group Members: Matthew Van Winkle, Tyler Curnow, Bach Nguyen.
 
 This program demonstrates an imlplimentatoin of a version control system similar to git and github.
 There are five main options a user can choose while running the program: initilize, add, remove, commit and checkout.
